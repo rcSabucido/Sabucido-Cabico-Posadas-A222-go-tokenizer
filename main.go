@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 )
 
 type TokenType string
@@ -164,17 +165,15 @@ func main() {
 	fmt.Print("Please enter a sentence: ")
 	reader := bufio.NewReader(os.Stdin)
 	input, _ := reader.ReadString('\n')
-
-	var newInput string
+	input = strings.TrimSpace(input)
 	for _, ch := range input {
-		if isLetter(ch) || isDigit(ch) || isSentenceEndPunctuation(ch) {
-			newInput += string(ch)
-		} else {
-			newInput += "-"
+		if ch == ' ' {
+			fmt.Println("Error: Input can only contain hyphens as delimiters.")
+			return
 		}
 	}
 
-	tokens := Tokenize(newInput)
+	tokens := Tokenize(input)
 	printPhase1Output(tokens)
 	printPhase2Output(tokens)
 
