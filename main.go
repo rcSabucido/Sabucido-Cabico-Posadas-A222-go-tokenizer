@@ -68,7 +68,7 @@ func classifyToken(token string) Token {
 	} else if isPunctuation(token) {
 		return Token{Value: token, Type: punctuation}
 	}
-	return Token{Value: token, Type: endOfLine}
+	return Token{Value: token, Type: word}
 }
 
 func isNumber(token string) bool {
@@ -166,13 +166,6 @@ func main() {
 	reader := bufio.NewReader(os.Stdin)
 	input, _ := reader.ReadString('\n')
 	input = strings.TrimSpace(input)
-	for _, ch := range input {
-		if ch == ' ' {
-			fmt.Println("Error: Input can only contain hyphens as delimiters.")
-			return
-		}
-	}
-
 	tokens := Tokenize(input)
 	printPhase1Output(tokens)
 	printPhase2Output(tokens)
