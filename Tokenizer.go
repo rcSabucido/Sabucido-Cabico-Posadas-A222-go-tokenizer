@@ -5,8 +5,9 @@ import (
 	"strings"
 )
 
-type TokenType string
+type TokenType string // declares a custom type
 
+// defines different token types
 const (
 	word         TokenType = "Word"
 	number       TokenType = "Number"
@@ -20,35 +21,45 @@ type Token struct {
 	Type  TokenType
 }
 
+// Tokenize tokenizes an input string and breaks it down into tokens
 func Tokenize(input string) []Token {
-	var tokens []Token
-	var currentToken string
+	var tokens []Token      // calls the Token struct and initializes it as a slice
+	var currentToken string // to accumulate characters for the current token
 
+	// iterates through each character in the input string
 	for i, ch := range input {
+		// skips hyphens to avoid splitting words like "word-word"
 		if ch == '-' {
+			// if there's an ongoing token, classify it before moving on to the next loop
 			if len(currentToken) > 0 {
 				tokens = append(tokens, classifyToken(currentToken))
-				currentToken = ""
+				currentToken = "" // resets the accumulated token
 			}
 			continue
 		}
 
+		// handles sentence ending punctuation
 		if isSentenceEndPunctuation(ch) {
 			if len(currentToken) > 0 {
 				tokens = append(tokens, classifyToken(currentToken))
 				currentToken = ""
 			}
+			// adds the punctuation as a separate token
 			tokens = append(tokens, Token{Value: string(ch), Type: punctuation})
+			// adds a new token to indicate end of line
 			tokens = append(tokens, Token{Value: "\\n", Type: endOfLine})
 			continue
 		}
 
+		// if it's the last character, classify the final token
 		if i == len(input)-1 {
 			currentToken += string(ch)
 			tokens = append(tokens, classifyToken(currentToken))
 			continue
 
 		}
+
+		// builds the token to be classified before reaching a delimiter
 		currentToken += string(ch)
 	}
 
@@ -56,6 +67,7 @@ func Tokenize(input string) []Token {
 
 }
 
+// classifyToken identifies the type of token based on its contents
 func classifyToken(token string) Token {
 	if isNumber(token) {
 		return Token{Value: token, Type: number}
@@ -66,6 +78,7 @@ func classifyToken(token string) Token {
 	} else if isPunctuation(token) {
 		return Token{Value: token, Type: punctuation}
 	}
+	// default to word if none apply
 	return Token{Value: token, Type: word}
 }
 
