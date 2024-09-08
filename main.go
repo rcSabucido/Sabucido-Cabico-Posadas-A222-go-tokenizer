@@ -18,7 +18,7 @@ func main() {
 	var user User
 	form := huh.NewForm(
 		huh.NewGroup(huh.NewNote().
-			Title("Go Tokenizer").
+			Title(lipgloss.NewStyle().Background(lipgloss.Color("212")).Foreground(lipgloss.Color("#ffffff")).Render("Go Tokenizer")).
 			Description("Welcome to _Go Tokenizer_!\n\nThis project was made by Sabucido, Cabico, and Posadas\n\n").
 			Next(true).
 			NextLabel("Next"),
@@ -28,7 +28,7 @@ func main() {
 			Value(&user.Input).
 			Title("Enter your string:").
 			Placeholder("this-is-an-example.").
-			Description("Please use a hyphen(-) as a delimiter."),
+			Description(lipgloss.NewStyle().Foreground(lipgloss.Color("212")).Render("Please use a hyphen(-) as a delimiter.")),
 		),
 	)
 
