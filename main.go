@@ -59,7 +59,7 @@ func main() {
 			return lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("212")).Render(s)
 		}
 
-		// Tokenize the user input string (assuming Tokenize is defined elsewhere)
+		// Tokenize the user input string
 		tokens := Tokenize(user.Input)
 
 		// Format the output string and write to the string builder
