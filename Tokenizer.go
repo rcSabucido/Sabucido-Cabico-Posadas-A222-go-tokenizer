@@ -38,6 +38,11 @@ func Tokenize(input string) []Token {
 			continue
 		}
 
+		if ch == '.' && i > 0 && isDigit(rune(input[i-1])) && isDigit(rune(input[i+1])) {
+			currentToken += string(ch)
+			continue
+		}
+
 		// handles sentence ending punctuation
 		if isSentenceEndPunctuation(ch) {
 			if len(currentToken) > 0 {
@@ -47,7 +52,9 @@ func Tokenize(input string) []Token {
 			// adds the punctuation as a separate token
 			tokens = append(tokens, Token{Value: string(ch), Type: punctuation})
 			// adds a new token to indicate end of line
-			tokens = append(tokens, Token{Value: "\\n", Type: endOfLine})
+			if i == len(input)-1 || input[i+1] == ' ' || input[i+1] == '\n' {
+				tokens = append(tokens, Token{Value: "\\n", Type: endOfLine})
+			}
 			continue
 		}
 
@@ -83,7 +90,15 @@ func classifyToken(token string) Token {
 }
 
 func isNumber(token string) bool {
+	dotSeen := false
 	for _, ch := range token {
+		if ch == '.' {
+			if dotSeen {
+				return false
+			}
+			dotSeen = true
+			continue
+		}
 		if !isDigit(ch) {
 			return false
 		}
@@ -92,10 +107,12 @@ func isNumber(token string) bool {
 }
 
 func isWord(token string) bool {
+	allowedPunctuations := "'@"
 	for _, ch := range token {
-		if !isLetter(ch) {
-			return false
+		if isLetter(ch) || containsRune(allowedPunctuations, ch) {
+			continue
 		}
+		return false
 	}
 	return true
 }
@@ -135,7 +152,7 @@ func isSentenceEndPunctuation(ch rune) bool {
 }
 
 func isAsciiPunctuation(ch rune) bool {
-	punctuationMarks := "!\"#$%&'()+,./:;<=>?@[\\]^_`{|}~"
+	punctuationMarks := "!\"#$%&'()+.,/:;<=>?@[\\]^_`{|}~"
 	return containsRune(punctuationMarks, ch)
 }
 
